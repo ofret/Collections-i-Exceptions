@@ -5,14 +5,16 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Map<String, Integer> carret = new HashMap<>();
-        Map<String, Double> preus = new HashMap<>();
-        Map<String, String> noms = new HashMap<>();
+        //Aqui fem com 3 "recipients" que és el HashMap
+        Map<String, Integer> carret = new HashMap<>();  //Aquest guarda quantes unitats has comprat de cada producte
+        Map<String, Double> preus = new HashMap<>();    //Aquest guarda el preu unitari de cada producte per poder fer els càlculs
+        Map<String, String> noms = new HashMap<>();     //Aquest guarda el nom del producte per poder imprimir el tiquet final
         int op = -1;
         Scanner sc = new Scanner(System.in);
 
         do {
             try {
+                //Fem un bucle pel menu
                 System.out.println("\nBENVINGUT AL SUPERMERCAT\n------------");
                 System.out.println("1) Introduir producte");
                 System.out.println("2) Passar per caixa");
@@ -23,12 +25,15 @@ public class Main {
                     op = sc.nextInt();
                     switch (op) {
                         case 1:
+                            //Cridem el menu de la classe Producte
                             Producte.menuProducte(carret, preus, noms);
                             break;
                         case 2:
+                            //Cridem aquesta funcio per pasar per caixa
                             pasarCaixa(carret, preus, noms);
                             break;
                         case 3:
+                            //Cridem aquesta funcio per mostrar el carret
                             mostrarCarret(carret, noms);
                             break;
                     }
@@ -39,14 +44,16 @@ public class Main {
                 System.out.println("Error en el menú: " + e.getMessage());
                 sc.nextLine();
             }
-        } while (op != 0);
+        } while (op != 0);  //Farà aquest bucle fins que s'introdueixi el número 0
     }
 
+    // Funció per ensenyar què portem al carret
     public static void mostrarCarret(Map<String, Integer> carret, Map<String, String> noms) {
         System.out.println("\n--- Carret ---");
-        if (carret.isEmpty()) {
+        if (carret.isEmpty()) { // Mirem si el "recipient" està buit
             System.out.println("El carret està buit");
         } else {
+            // Recorrem el carret fent servir la clau (codi) per saber el nom i les unitats
             for (String clau : carret.keySet()) {
                 String nom = noms.get(clau);
                 System.out.println("Producte: " + nom + " | Unitats: " + carret.get(clau));
@@ -54,6 +61,7 @@ public class Main {
         }
     }
 
+    //Funció per veure el ticket complet i pagar
     public static void pasarCaixa(Map<String, Integer> carret, Map<String, Double> preus, Map<String, String> noms) {
         try {
             LocalDate dataCompra = LocalDate.now();
@@ -68,12 +76,14 @@ public class Main {
             if (carret.isEmpty()) {
                 System.out.println("El carret està buit.");
             } else {
+                // Calculem el preu de cada línia (unitats * preu unitari)
                 for (String clau : carret.keySet()) {
                     int unitats = carret.get(clau);
                     double preuUnit = preus.get(clau);
                     String nomProd = noms.get(clau);
                     double totalProd = unitats * preuUnit;
 
+                    // Imprimim la línia ben alineada i sumem al total
                     System.out.printf("%-15s %5d %10.2f %10.2f\n", nomProd, unitats, preuUnit, totalProd);
                     totalTicket += totalProd;
                 }
@@ -81,6 +91,7 @@ public class Main {
                 System.out.printf("Total: %.3f\n", totalTicket);
             }
 
+            //Buidem els "recipients"
             carret.clear();
             preus.clear();
             noms.clear();
